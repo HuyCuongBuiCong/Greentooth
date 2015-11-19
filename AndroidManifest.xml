@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".BluetoothChat"
+            android:name=".BluetoothChatActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,10 +30,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="select_device"
             android:theme="@android:style/Theme.Holo.Dialog" />
-        <activity
-            android:name="com.example.greentooth.bluetooth.Fragment_roomchat"
-            android:label="@string/title_activity_fragment_roomchat" >
-        </activity>
+       
     </application>
 
 </manifest>

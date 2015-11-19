@@ -1,26 +1,8 @@
-/*
- * Copyright (C) 2009 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.example.greentooth;
-
-//import com.example.android.BluetoothChat;
-//import android.R;
-
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -35,33 +17,32 @@ import android.widget.Toast;
 import com.example.greentooth.Const.Const;
 import com.example.greentooth.bluetooth.BluetoothChatService;
 import com.example.greentooth.bluetooth.DeviceListActivity;
-import com.example.greentooth.bluetooth.Fragment_roomchat;
+import com.example.roomchat.Fragment_roomchat;
 
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BluetoothChat extends Activity implements
+public class BluetoothChatActivity extends Activity implements
 		Fragment_roomchat.Communicator {
-
 	// Bluetooth members
 	private String connectedDeviceName = null;
-
 	private BluetoothAdapter bluetoothAdapter = null;
 	/**
 	 * Bluetooth Chat Service manages thread Which respons to connect to other
 	 * devices, send and recieves messages
 	 */
 	private BluetoothChatService chatService = null;
-
 	// Fragment
 	Fragment_roomchat fragment_roomchat = null;
+	Fragment fragment_main = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bluetooth_chat);
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
+		fragment_main = new fragment_main();
+		startFragmentMain();
 		// If the adapter is null, then Bluetooth is not supported
 		if (bluetoothAdapter == null) {
 			Toast.makeText(this, "Bluetooth is not available",
@@ -97,27 +78,6 @@ public class BluetoothChat extends Activity implements
 	public synchronized void onResume() {
 		super.onResume();
 		// Show Devices List Activity
-		Button button_search = (Button) findViewById(R.id.button_search);
-		button_search.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				startDeviceListActivity();
-			}
-		});
-
-		// Show roomchat Fragment
-		Button button_roomchat = (Button) findViewById(R.id.button_roomchat);
-		button_roomchat.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				fragment_roomchat = new Fragment_roomchat();
-				startFragmentRoomChat();
-				setRoomChatCommunicate();
-
-			}
-		});
 
 		if (chatService != null) {
 			// Only if the state is STATE_NONE, do we know that we haven't
@@ -139,7 +99,16 @@ public class BluetoothChat extends Activity implements
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 
-		transaction.replace(R.id.fragment_roomchat, fragment_roomchat);
+		transaction.replace(R.id.container, fragment_roomchat);
+		transaction.commit();
+
+	}
+
+	protected void startFragmentMain() {
+		FragmentTransaction transaction = getFragmentManager()
+				.beginTransaction();
+
+		transaction.replace(R.id.container, fragment_main);
 		transaction.commit();
 
 	}
